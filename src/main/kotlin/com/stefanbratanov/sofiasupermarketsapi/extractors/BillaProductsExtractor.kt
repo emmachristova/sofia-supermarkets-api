@@ -63,6 +63,38 @@ class BillaProductsExtractor : UrlProductsExtractor {
           }
         }
       }
+        ?: htmlDoc
+          .select(".productSection > .product .actualProduct")
+          .firstOrNull { it.text().contains("Валидност:") }
+          ?.text()
+          ?.let {
+            val dates = "\\d{2}\\.\\d{2}(?:\\.\\d{4})?".toRegex().findAll(it).toList()
+
+            if (dates.size >= 2) {
+              sequenceOf(
+                try {
+                  val start = dates[0].value
+                  val end = dates[1].value
+                  val endDate = LocalDate.parse(end, DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                  LocalDate.parse(
+                    if (start.count { ch -> ch == '.' } == 1) "$start.${endDate.year}" else start,
+                    DateTimeFormatter.ofPattern("dd.MM.yyyy"),
+                  )
+                } catch (ex: Exception) {
+                  log.error("Error while parsing start date", ex)
+                  null
+                },
+                try {
+                  LocalDate.parse(dates[1].value, DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                } catch (ex: Exception) {
+                  log.error("Error while parsing end date", ex)
+                  null
+                },
+              )
+            } else {
+              null
+            }
+          }
 
     val priceClass = ".price"
 
