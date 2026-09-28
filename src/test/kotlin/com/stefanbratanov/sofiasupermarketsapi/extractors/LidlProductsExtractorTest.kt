@@ -39,10 +39,14 @@ internal class LidlProductsExtractorTest {
       )
 
     val testHtmlUrl = getUri("/extractors/lidl/input.html").toURL()
+    val newLidlHtmlUrl = getUri("/extractors/lidl/lidl-current.html").toURL()
 
-    val products = underTest.extract(testHtmlUrl)
+    val products = underTest.extract(newLidlHtmlUrl)
 
     val actualJson = objectMapper.writeValueAsString(products)
+
+    println("LIDL NEW FORMAT - PRODUCTS FOUND: ${products.size}")
+    products.forEach { println(it) }
     val expectedJson = readResource("/extractors/lidl/expected.json")
 
     // use current year for comparison
