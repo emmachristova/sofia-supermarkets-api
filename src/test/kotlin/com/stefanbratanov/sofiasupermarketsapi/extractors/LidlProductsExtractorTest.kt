@@ -59,11 +59,9 @@ internal class LidlProductsExtractorTest {
     // use real product extractor
     val underTest =
       LidlProductsExtractor(URI("https://www.lidl.bg").toURL(), LidlProductExtractor())
-    val lidlUrl =
-      URI(
-          "https://www.lidl.bg/c/niska-tsena-visoko-kachestvo/a10076411?channel=store&tabCode=Current_Sales_Week"
-        )
-        .toURL()
+val lidlUrl =
+  URI("https://www.lidl.bg/")
+    .toURL()
     val products = underTest.extract(lidlUrl)
 
     products.forEach { println(it) }
